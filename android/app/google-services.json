@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "725694871546",
+    "project_id": "fir-ba703",
+    "storage_bucket": "fir-ba703.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:725694871546:android:f045c609d4d2ee0ff19643",
+        "android_client_info": {
+          "package_name": "com.example.flutter_course_app"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDQafJKXthxAxUmQd7-uNJdmHQZxn2Yv5I"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
