@@ -20,74 +20,110 @@ class _HomeState extends State<Home> {
         title: Text("Login Page"),
         actions: [Icon(Icons.account_box_sharp)],
       ),
-      body: Container(
-        width: double.infinity,
-        padding: EdgeInsets.all(32),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            Text("LOGIN", style: TextStyle(fontSize: 30)),
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text("Email:"),
-                TextField(controller: email),
-                SizedBox(height: 16),
-                Text("Senha:"),
-                TextField(controller: password),
-                SizedBox(height: 20),
-                SizedBox(
-                  width: double.infinity,
-                  child:
-                      loader
-                          ? Center(
-                            child: CircularProgressIndicator(
-                              color: Colors.orange,
+      body: SingleChildScrollView(
+        child: Container(
+          width: double.infinity,
+          padding: EdgeInsets.all(32),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              Text("LOGIN", style: TextStyle(fontSize: 30)),
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text("Email:"),
+                  TextField(controller: email),
+                  SizedBox(height: 16),
+                  Text("Senha:"),
+                  TextField(controller: password),
+                  SizedBox(height: 20),
+                  SizedBox(
+                    width: double.infinity,
+                    child:
+                        loader
+                            ? Center(
+                              child: CircularProgressIndicator(
+                                color: Colors.orange,
+                              ),
+                            )
+                            : TextButton(
+                              onPressed: () async {
+                                setState(() {
+                                  loader = true;
+                                });
+                                await AuthServices.handleSignIn(
+                                  email.text.toString(),
+                                  password.text.toString(),
+                                  context,
+                                );
+                                setState(() {
+                                  loader = false;
+                                });
+                              },
+                              style: TextButton.styleFrom(
+                                backgroundColor: Colors.amber.shade100,
+                              ),
+                              child: Text("Logar"),
                             ),
-                          )
-                          : TextButton(
-                            onPressed: () async {
-                              setState(() {
-                                loader = true;
-                              });
-                              await AuthServices.handleSignIn(
-                                email.text.toString(),
-                                password.text.toString(),
-                                context,
-                              );
-                              setState(() {
-                                loader = false;
-                              });
-                            },
-                            style: TextButton.styleFrom(
-                              backgroundColor: Colors.amber.shade100,
-                            ),
-                            child: Text("Logar"),
-                          ),
-                ),
-              ],
-            ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Text("Não possui conta? "),
-                GestureDetector(
-                  onTap: () {
-                    Navigator.pushAndRemoveUntil(
-                      context,
-                      MaterialPageRoute(builder: (context) => Signup()),
-                      (Route<dynamic> route) => false,
-                    );
-                  },
-                  child: Text(
-                    "Registre-se",
-                    style: TextStyle(color: Colors.blue),
                   ),
-                ),
-              ],
-            ),
-          ],
+                  SizedBox(height: 20),
+
+                  SizedBox(
+                    width: double.infinity,
+                    child:
+                        loader
+                            ? Center(
+                              child: CircularProgressIndicator(
+                                color: Colors.orange,
+                              ),
+                            )
+                            : TextButton(
+                              onPressed: () async {
+                                setState(() {
+                                  loader = true;
+                                });
+                                AuthServices.handleGoogleSignIn(context);
+                              },
+                              style: TextButton.styleFrom(
+                                backgroundColor: Colors.amber.shade100,
+                              ),
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Image.asset(
+                                    "images/google.png",
+                                    height: 30,
+                                    width: 30,
+                                  ),
+                                  Text("Login google"),
+                                ],
+                              ),
+                            ),
+                  ),
+                ],
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text("Não possui conta? "),
+                  GestureDetector(
+                    onTap: () {
+                      Navigator.pushAndRemoveUntil(
+                        context,
+                        MaterialPageRoute(builder: (context) => Signup()),
+                        (Route<dynamic> route) => false,
+                      );
+                    },
+                    child: Text(
+                      "Registre-se",
+                      style: TextStyle(color: Colors.blue),
+                    ),
+                  ),
+                ],
+              ),
+            ],
+          ),
         ),
       ),
     );
