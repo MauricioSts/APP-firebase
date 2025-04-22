@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_course_app/SignUp.dart';
+import 'package:flutter_course_app/services/AuthServices/auth_services.dart';
 
 class Home extends StatefulWidget {
   const Home({super.key});
@@ -36,7 +37,13 @@ class _HomeState extends State<Home> {
                 Text("Senha:"),
                 TextField(controller: password),
                 TextButton(
-                  onPressed: () {},
+                  onPressed: () {
+                    AuthServices.handleSignIn(
+                      email.text.toString(),
+                      password.text.toString(),
+                      context,
+                    );
+                  },
                   style: TextButton.styleFrom(
                     backgroundColor: Colors.amber.shade100,
                   ),

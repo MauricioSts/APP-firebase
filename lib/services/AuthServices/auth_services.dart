@@ -15,6 +15,27 @@ class AuthServices {
     }
   }
 
+  static handleSignIn(
+    String email,
+    String password,
+    BuildContext context,
+  ) async {
+    String message = await signInwithEmail(email, password);
+    showSnackBar(message, context);
+  }
+
+  static Future<String> signInwithEmail(String email, String password) async {
+    try {
+      await FirebaseAuth.instance.signInWithEmailAndPassword(
+        email: email,
+        password: password,
+      );
+      return "Sign-in successfull";
+    } catch (e) {
+      return "erros during sign up ${e.toString()}";
+    }
+  }
+
   static handleSignUp(
     String email,
     String password,
