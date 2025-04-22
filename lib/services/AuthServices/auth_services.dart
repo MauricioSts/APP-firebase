@@ -9,9 +9,9 @@ class AuthServices {
         email: email,
         password: password,
       );
-      return "Sign-up successfull";
+      return "Sign-up successful";
     } catch (e) {
-      return "erros during sign up ${e.toString()}";
+      return "Error during sign up: ${e.toString()}";
     }
   }
 
@@ -21,6 +21,7 @@ class AuthServices {
     BuildContext context,
   ) async {
     String message = await signInwithEmail(email, password);
+    // Exibe a mensagem com um SnackBar
     showSnackBar(message, context);
   }
 
@@ -30,9 +31,9 @@ class AuthServices {
         email: email,
         password: password,
       );
-      return "Sign-in successfull";
+      return "Sign-in successful";
     } catch (e) {
-      return "erros during sign up ${e.toString()}";
+      return "Error during sign in: ${e.toString()}"; // Corrigido para "sign in"
     }
   }
 

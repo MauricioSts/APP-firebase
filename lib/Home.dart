@@ -9,10 +9,10 @@ class Home extends StatefulWidget {
   State<Home> createState() => _HomeState();
 }
 
-TextEditingController email = TextEditingController();
-TextEditingController password = TextEditingController();
-
 class _HomeState extends State<Home> {
+  TextEditingController email = TextEditingController();
+  TextEditingController password = TextEditingController();
+  bool loader = false;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -36,18 +36,35 @@ class _HomeState extends State<Home> {
                 SizedBox(height: 16),
                 Text("Senha:"),
                 TextField(controller: password),
-                TextButton(
-                  onPressed: () {
-                    AuthServices.handleSignIn(
-                      email.text.toString(),
-                      password.text.toString(),
-                      context,
-                    );
-                  },
-                  style: TextButton.styleFrom(
-                    backgroundColor: Colors.amber.shade100,
-                  ),
-                  child: Text("Logar"),
+                SizedBox(height: 20),
+                SizedBox(
+                  width: double.infinity,
+                  child:
+                      loader
+                          ? Center(
+                            child: CircularProgressIndicator(
+                              color: Colors.orange,
+                            ),
+                          )
+                          : TextButton(
+                            onPressed: () async {
+                              setState(() {
+                                loader = true;
+                              });
+                              await AuthServices.handleSignIn(
+                                email.text.toString(),
+                                password.text.toString(),
+                                context,
+                              );
+                              setState(() {
+                                loader = false;
+                              });
+                            },
+                            style: TextButton.styleFrom(
+                              backgroundColor: Colors.amber.shade100,
+                            ),
+                            child: Text("Logar"),
+                          ),
                 ),
               ],
             ),

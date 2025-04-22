@@ -1,3 +1,5 @@
+import 'dart:ffi';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_course_app/Home.dart';
 import 'package:flutter_course_app/services/AuthServices/auth_services.dart';
@@ -9,10 +11,10 @@ class Signup extends StatefulWidget {
   State<Signup> createState() => _SignupState();
 }
 
-TextEditingController email = TextEditingController();
-TextEditingController password = TextEditingController();
-
 class _SignupState extends State<Signup> {
+  TextEditingController email = TextEditingController();
+  TextEditingController password = TextEditingController();
+  bool loader = false;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -35,16 +37,35 @@ class _SignupState extends State<Signup> {
                 SizedBox(height: 16),
                 Text("Senha:"),
                 TextField(controller: password),
-                TextButton(
-                  onPressed: () {
-                    AuthServices.handleSignUp(
-                      email.text.toString(),
-                      password.text.toString(),
-                      context,
-                    );
-                  },
-                  style: TextButton.styleFrom(backgroundColor: Colors.orange),
-                  child: Text("Registar"),
+                SizedBox(height: 20),
+                SizedBox(
+                  width: double.infinity,
+                  child:
+                      loader
+                          ? const Center(
+                            child: CircularProgressIndicator(
+                              color: Colors.orange,
+                            ),
+                          )
+                          : TextButton(
+                            onPressed: () async {
+                              setState(() {
+                                loader = true;
+                              });
+                              await AuthServices.handleSignUp(
+                                email.text.toString(),
+                                password.text.toString(),
+                                context,
+                              );
+                              setState(() {
+                                loader = false;
+                              });
+                            },
+                            style: TextButton.styleFrom(
+                              backgroundColor: Colors.orange,
+                            ),
+                            child: Text("Registar"),
+                          ),
                 ),
               ],
             ),
