@@ -1,4 +1,5 @@
-import 'package:firebase_core/firebase_core.dart';
+import 'dart:developer';
+
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';
@@ -6,45 +7,64 @@ import 'package:google_sign_in/google_sign_in.dart';
 class AuthServices {
   static final GoogleSignIn _googleSignIn = GoogleSignIn();
 
-  // Função de Sign-in com o Google
-  static Future<void> handleGoogleSignIn(BuildContext context) async {
+  // Google Sign-In
+  static Future<Map<String, dynamic>?> signInWithGoogle() async {
     try {
-      // Iniciar o fluxo de login com o Google
-      GoogleSignInAccount? user = await _googleSignIn.signIn();
-      if (user != null) {
-        // Obtenha o GoogleSignInAuthentication para pegar o ID token
-        final GoogleSignInAuthentication googleAuth = await user.authentication;
+      final GoogleSignInAccount? googleUser = await _googleSignIn.signIn();
 
-        // Crie uma credencial do Firebase com o ID token
-        final OAuthCredential credential = GoogleAuthProvider.credential(
-          accessToken: googleAuth.accessToken,
-          idToken: googleAuth.idToken,
-        );
-
-        // Faça o sign-in no Firebase com a credencial do Google
-        await FirebaseAuth.instance.signInWithCredential(credential);
-
-        showSnackBar("Google Sign-in successful", context);
+      if (googleUser == null) {
+        return null;
       }
+
+      final GoogleSignInAuthentication googleAuth =
+          await googleUser.authentication;
+
+      final OAuthCredential credential = GoogleAuthProvider.credential(
+        accessToken: googleAuth.accessToken,
+        idToken: googleAuth.idToken,
+      );
+
+      UserCredential userCredential = await FirebaseAuth.instance
+          .signInWithCredential(credential);
+
+      log(userCredential.user!.email ?? 'Email não disponível');
+      return null;
     } catch (e) {
-      showSnackBar("Error during Google sign-in: ${e.toString()}", context);
+      return null;
     }
   }
 
-  // Função de Sign-up com Email e Senha
-  static Future<String> signUpwithEmail(String email, String password) async {
+  // Sign Out
+  static Future<void> signOut() async {
+    await _googleSignIn.signOut();
+    await FirebaseAuth.instance.signOut();
+  }
+
+  // Sign-Up com Email e Senha (corrigido e agora static)
+  static Future<Map<String, dynamic>> signUpwithEmail(
+    String email,
+    String password,
+  ) async {
     try {
       await FirebaseAuth.instance.createUserWithEmailAndPassword(
         email: email,
         password: password,
       );
-      return "Sign-up successful";
+      return {'success': true, 'message': 'Cadastro realizado com sucesso!'};
+    } on FirebaseAuthException catch (e) {
+      if (e.code == 'email-already-in-use') {
+        return {'success': false, 'message': 'Este e-mail já está em uso.'};
+      } else if (e.code == 'weak-password') {
+        return {'success': false, 'message': 'A senha é muito fraca.'};
+      } else {
+        return {'success': false, 'message': 'Erro: ${e.message}'};
+      }
     } catch (e) {
-      return "Error during sign up: ${e.toString()}";
+      return {'success': false, 'message': 'Erro inesperado: $e'};
     }
   }
 
-  // Função de Sign-in com Email e Senha
+  // Sign-In com Email e Senha
   static Future<String> signInwithEmail(String email, String password) async {
     try {
       await FirebaseAuth.instance.signInWithEmailAndPassword(
@@ -57,8 +77,8 @@ class AuthServices {
     }
   }
 
-  // Função para tratar o sign-in com Email e Senha
-  static handleSignIn(
+  // Handler para Sign-In
+  static Future<void> handleSignIn(
     String email,
     String password,
     BuildContext context,
@@ -67,24 +87,41 @@ class AuthServices {
     showSnackBar(message, context);
   }
 
-  // Função para tratar o sign-up com Email e Senha
-  static handleSignUp(
+  // Handler para Sign-Up (corrigido)
+  static Future<void> handleSignUp(
     String email,
     String password,
     BuildContext context,
   ) async {
-    String message = await signUpwithEmail(email, password);
-    showSnackBar(message, context);
+    final result = await signUpwithEmail(email, password);
+
+    showSnackBar(result['message'], context);
+
+    if (result['success']) {
+      Future.delayed(const Duration(milliseconds: 500), () {});
+    }
   }
 
-  // Exibe um SnackBar com a mensagem fornecida
+  // Exibir mensagem
   static void showSnackBar(String message, BuildContext context) {
     final snackBar = SnackBar(
-      content: Text(message, style: TextStyle(color: Colors.white)),
+      content: Text(message, style: const TextStyle(color: Colors.white)),
       backgroundColor: Colors.orange,
       behavior: SnackBarBehavior.floating,
       duration: const Duration(seconds: 3),
     );
     ScaffoldMessenger.of(context).showSnackBar(snackBar);
+  }
+
+  static Future<void> resetPasswordSendWmail(
+    String email,
+    BuildContext context,
+  ) async {
+    try {
+      await FirebaseAuth.instance.sendPasswordResetEmail(email: email);
+      showSnackBar("Reset password email sent successfully", context);
+    } catch (e) {
+      showSnackBar("Error: ${e.toString()}", context);
+    }
   }
 }

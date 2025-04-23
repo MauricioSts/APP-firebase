@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_course_app/ForgetPasswordScreen.dart';
 import 'package:flutter_course_app/SignUp.dart';
 import 'package:flutter_course_app/services/AuthServices/auth_services.dart';
+import 'package:page_transition/page_transition.dart';
 
 class Home extends StatefulWidget {
   const Home({super.key});
@@ -71,38 +73,30 @@ class _HomeState extends State<Home> {
 
                   SizedBox(
                     width: double.infinity,
-                    child:
-                        loader
-                            ? Center(
-                              child: CircularProgressIndicator(
-                                color: Colors.orange,
-                              ),
-                            )
-                            : TextButton(
-                              onPressed: () async {
-                                setState(() {
-                                  loader = true;
-                                });
-                                AuthServices.handleGoogleSignIn(context);
-                              },
-                              style: TextButton.styleFrom(
-                                backgroundColor: Colors.amber.shade100,
-                              ),
-                              child: Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  Image.asset(
-                                    "images/google.png",
-                                    height: 30,
-                                    width: 30,
-                                  ),
-                                  Text("Login google"),
-                                ],
-                              ),
-                            ),
+
+                    child: TextButton(
+                      onPressed: () async {
+                        AuthServices.signInWithGoogle();
+                      },
+                      style: TextButton.styleFrom(
+                        backgroundColor: Colors.amber.shade100,
+                      ),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Image.asset(
+                            "images/google.png",
+                            height: 30,
+                            width: 30,
+                          ),
+                          Text("Login google"),
+                        ],
+                      ),
+                    ),
                   ),
                 ],
               ),
+              SizedBox(height: 20),
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
@@ -121,6 +115,31 @@ class _HomeState extends State<Home> {
                     ),
                   ),
                 ],
+              ),
+              SizedBox(height: 20),
+              SizedBox(
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text("Esqueceu a senha?"),
+                    GestureDetector(
+                      onTap:
+                          () => {
+                            Navigator.push(
+                              context,
+                              PageTransition(
+                                child: Forgetpasswordscreen(),
+                                type: PageTransitionType.fade,
+                              ),
+                            ),
+                          },
+                      child: Text(
+                        " Clique aqui!!",
+                        style: TextStyle(color: Colors.blue),
+                      ),
+                    ),
+                  ],
+                ),
               ),
             ],
           ),
