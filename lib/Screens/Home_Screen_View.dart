@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_course_app/services/AuthServices/auth_services.dart';
 import 'package:page_transition/page_transition.dart';
 import 'CreatePollScreen.dart'; // Altere o caminho se necessário
 
@@ -17,6 +18,9 @@ class _HomeScreenViewState extends State<HomeScreenView> {
       child: Scaffold(
         appBar: AppBar(
           title: const Text("Home"),
+          actions: [IconButton(onPressed: () async {
+            await AuthServices.signOut(context);
+          }, icon: Icon(Icons.logout))],
           bottom: const TabBar(
             tabs: [Tab(text: "All"), Tab(text: "Posted"), Tab(text: "Voted")],
           ),

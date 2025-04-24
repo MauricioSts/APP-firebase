@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_course_app/ForgetPasswordScreen.dart';
-import 'package:flutter_course_app/SignUp.dart';
+import 'package:flutter_course_app/Screens/ForgetPasswordScreen.dart';
+import 'package:flutter_course_app/LoginAndRegister/SignUp.dart';
 import 'package:flutter_course_app/services/AuthServices/auth_services.dart';
 import 'package:page_transition/page_transition.dart';
-
 class Home extends StatefulWidget {
   const Home({super.key});
 

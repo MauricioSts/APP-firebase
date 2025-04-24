@@ -1,9 +1,8 @@
 import 'dart:developer';
-
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_course_app/Home.dart';
-import 'package:flutter_course_app/Home_Screen_View.dart';
+import 'package:flutter_course_app/Screens/Home_Screen_View.dart';
+import 'package:flutter_course_app/LoginAndRegister/Home.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 
 class AuthServices {
@@ -86,7 +85,7 @@ class AuthServices {
     }
   }
 
-  // Handler para Sign-In
+  // Handler para Sign-In com redirecionamento para Home
   static Future<void> handleSignIn(
     String email,
     String password,
