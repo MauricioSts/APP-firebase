@@ -103,10 +103,9 @@ class _HomeState extends State<Home> {
                   Text("Não possui conta? "),
                   GestureDetector(
                     onTap: () {
-                      Navigator.pushAndRemoveUntil(
+                      Navigator.push(
                         context,
                         MaterialPageRoute(builder: (context) => Signup()),
-                        (Route<dynamic> route) => false,
                       );
                     },
                     child: Text(

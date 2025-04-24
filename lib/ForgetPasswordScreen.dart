@@ -14,6 +14,7 @@ class _ForgetpasswordscreenState extends State<Forgetpasswordscreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(),
       body: Container(
         padding: EdgeInsets.all(32),
         width: double.infinity,

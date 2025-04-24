@@ -1,5 +1,3 @@
-
-
 import 'package:flutter/material.dart';
 
 import 'package:flutter_course_app/services/AuthServices/auth_services.dart';
@@ -18,10 +16,7 @@ class _SignupState extends State<Signup> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text("Sign up Page"),
-        actions: [Icon(Icons.account_box_sharp)],
-      ),
+      appBar: AppBar(),
       body: Container(
         width: double.infinity,
         padding: EdgeInsets.all(32),

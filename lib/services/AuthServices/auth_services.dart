@@ -2,6 +2,8 @@ import 'dart:developer';
 
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_course_app/Home.dart';
+import 'package:flutter_course_app/Home_Screen_View.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 
 class AuthServices {
@@ -35,9 +37,16 @@ class AuthServices {
   }
 
   // Sign Out
-  static Future<void> signOut() async {
+  static Future<void> signOut(BuildContext context) async {
     await _googleSignIn.signOut();
     await FirebaseAuth.instance.signOut();
+
+    // Redireciona para a tela inicial (por exemplo, LoginScreen)
+    Navigator.pushAndRemoveUntil(
+      context,
+      MaterialPageRoute(builder: (context) => const Home()),
+      (route) => false, // Remove todas as rotas anteriores
+    );
   }
 
   // Sign-Up com Email e Senha (corrigido e agora static)
@@ -83,8 +92,33 @@ class AuthServices {
     String password,
     BuildContext context,
   ) async {
-    String message = await signInwithEmail(email, password);
-    showSnackBar(message, context);
+    try {
+      UserCredential userCredential = await FirebaseAuth.instance
+          .signInWithEmailAndPassword(email: email, password: password);
+
+      // Se chegou aqui, o login foi bem-sucedido
+      showSnackBar("Login realizado com sucesso!", context);
+
+      // Redirecionar para a tela Home
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (context) => const HomeScreenView()),
+      );
+    } on FirebaseAuthException catch (e) {
+      String errorMessage;
+
+      if (e.code == 'user-not-found') {
+        errorMessage = "Usuário não encontrado.";
+      } else if (e.code == 'wrong-password') {
+        errorMessage = "Senha incorreta.";
+      } else {
+        errorMessage = "Erro durante o login: ${e.message}";
+      }
+
+      showSnackBar(errorMessage, context);
+    } catch (e) {
+      showSnackBar("Erro inesperado: ${e.toString()}", context);
+    }
   }
 
   // Handler para Sign-Up (corrigido)
