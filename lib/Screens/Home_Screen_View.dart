@@ -18,9 +18,14 @@ class _HomeScreenViewState extends State<HomeScreenView> {
       child: Scaffold(
         appBar: AppBar(
           title: const Text("Home"),
-          actions: [IconButton(onPressed: () async {
-            await AuthServices.signOut(context);
-          }, icon: Icon(Icons.logout))],
+          actions: [
+            IconButton(
+              onPressed: () async {
+                await AuthServices.signOut(context);
+              },
+              icon: Icon(Icons.logout),
+            ),
+          ],
           bottom: const TabBar(
             tabs: [Tab(text: "All"), Tab(text: "Posted"), Tab(text: "Voted")],
           ),
@@ -37,7 +42,7 @@ class _HomeScreenViewState extends State<HomeScreenView> {
             Navigator.push(
               context,
               PageTransition(
-                child: const Createpollscreen(),
+                child: const CreatePollScreen(),
                 type: PageTransitionType.fade,
               ),
             );
