@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_course_app/services/AuthServices/auth_services.dart';
 import 'package:page_transition/page_transition.dart';
@@ -11,6 +12,7 @@ class HomeScreenView extends StatefulWidget {
 }
 
 class _HomeScreenViewState extends State<HomeScreenView> {
+  final String _currentUserId = FirebaseAuth.instance.currentUser!.uid;
   @override
   Widget build(BuildContext context) {
     return DefaultTabController(
@@ -42,7 +44,7 @@ class _HomeScreenViewState extends State<HomeScreenView> {
             Navigator.push(
               context,
               PageTransition(
-                child: const CreatePollScreen(),
+                child: CreatePollScreen(currentUserId: _currentUserId,),
                 type: PageTransitionType.fade,
               ),
             );
