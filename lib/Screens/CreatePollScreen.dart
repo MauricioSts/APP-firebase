@@ -104,6 +104,7 @@ class _CreatePollScreenState extends State<CreatePollScreen> {
                   optionImages[i] != null
                       ? Image.file(
                         optionImages[i]!,
+
                         height: 50,
                         width: 50,
                         fit: BoxFit.cover,
@@ -146,6 +147,9 @@ class _CreatePollScreenState extends State<CreatePollScreen> {
       setState(() {
         optionImages[index] = File(pickedFile.path);
       });
+      log("Imagem carregada com sucesso: ${pickedFile.path}");
+    } else {
+      log("Nenhuma imagem foi selecionada.");
     }
   }
 
@@ -169,12 +173,6 @@ class _CreatePollScreenState extends State<CreatePollScreen> {
         );
         return false;
       }
-      if (optionImages[i] == null) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text("Image for Option ${i + 1} is required")),
-        );
-        return false;
-      }
     }
 
     return true;
@@ -182,14 +180,28 @@ class _CreatePollScreenState extends State<CreatePollScreen> {
 
   Future<String?> uploadImage(File imageFile, String pollId, int index) async {
     try {
+      log("Caminho do arquivo a ser enviado: ${imageFile.path}");
+
+      // Verifique se o arquivo é válido (apenas JPG ou PNG)
+      if (!imageFile.path.endsWith(".jpg") &&
+          !imageFile.path.endsWith(".png")) {
+        log("Erro: O arquivo não é uma imagem válida.");
+        return null;
+      }
+
       final ref = FirebaseStorage.instance.ref().child(
         'polls/$pollId-option-$index.jpg',
       );
+
+      log("Referência do Firebase Storage: ${ref.fullPath}");
+
       final uploadTask = await ref.putFile(imageFile);
       final downloadUrl = await uploadTask.ref.getDownloadURL();
+
+      log("Imagem enviada com sucesso para a opção $index: $downloadUrl");
       return downloadUrl;
     } catch (e) {
-      log("Error uploading image: $e");
+      log("Erro ao enviar imagem: $e");
       return null;
     }
   }
@@ -207,13 +219,20 @@ class _CreatePollScreenState extends State<CreatePollScreen> {
       final List<Map<String, dynamic>> options = [];
 
       for (int i = 0; i < 3; i++) {
-        final imageUrl = await uploadImage(optionImages[i]!, pollId, i);
-        if (imageUrl == null) {
-          throw Exception("Failed to upload image for option ${i + 1}");
+        String? imageUrl;
+
+        // Só tenta fazer o upload da imagem se a imagem for selecionada
+        if (optionImages[i] != null) {
+          imageUrl = await uploadImage(optionImages[i]!, pollId, i);
+          if (imageUrl == null) {
+            throw Exception("Falha no upload da imagem da opção ${i + 1}");
+          }
         }
+
         options.add({
           "name": optionNameController[i].text.trim(),
-          "imageUrl": imageUrl,
+          "imageUrl":
+              imageUrl ?? "", // Se não houver imagem, usa uma string vazia
           "votes": 0,
         });
       }
@@ -233,14 +252,13 @@ class _CreatePollScreenState extends State<CreatePollScreen> {
       );
       Navigator.pop(context);
     } catch (e) {
-      log("Poll creation failed: $e");
+      log("Erro ao criar poll: $e");
       ScaffoldMessenger.of(
         context,
       ).showSnackBar(const SnackBar(content: Text("Failed to create Poll")));
     } finally {
       setState(() {
-        loader =
-            false; // ← Estava true antes, o que deixava o loading infinito!
+        loader = false; // ← O loading agora é ocultado após a finalização
       });
     }
   }

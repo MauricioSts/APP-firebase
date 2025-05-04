@@ -9,7 +9,7 @@ plugins {
 }
 
 android {
-    namespace = "com.example.flutter_course_app"
+    namespace = "com.example.flutter_course_app"  // O namespace agora está correto e substitui o package do AndroidManifest.xml
     compileSdk = flutter.compileSdkVersion
     ndkVersion = "27.0.12077973"
 
@@ -23,7 +23,7 @@ android {
     }
 
     defaultConfig {
-        applicationId = "com.example.flutter_course_app"
+        applicationId = "com.example.flutter_course_app"  // Garantir que applicationId esteja correto para o seu app
         minSdk = 23
         targetSdk = flutter.targetSdkVersion
         versionCode = flutter.versionCode
